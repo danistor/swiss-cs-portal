@@ -6,9 +6,16 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import { rootAuthLoader } from '@clerk/react-router/ssr.server'
+import { ClerkProvider, SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/react-router'
+
+
 
 import type { Route } from "./+types/root";
 import "./app.css";
+
+// Get the publishable key from the environment
+const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || "";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -23,6 +30,10 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+export async function loader(args: Route.LoaderArgs) {
+  return rootAuthLoader(args)
+}
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -32,7 +43,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="flex min-h-screen items-center justify-center">
+      <body className="">
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -41,8 +52,28 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function App() {
-  return <Outlet />;
+export default function App({ loaderData }: { loaderData: Route.ComponentProps }) {
+  return (
+    // <Outlet />
+
+    <ClerkProvider
+      loaderData={loaderData}
+      signUpFallbackRedirectUrl="/"
+      signInFallbackRedirectUrl="/"
+    >
+      <header className="flex items-center justify-center py-8 px-4">
+        <SignedOut>
+          <SignInButton />
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+      </header>
+      <main>
+        <Outlet />
+      </main>
+    </ClerkProvider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

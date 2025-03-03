@@ -1,0 +1,22 @@
+{
+  "common": {
+    "welcome": "Welcome to Customer Service Portal",
+    "login": "Login",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "tickets": "Tickets",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "tickets": {
+    "create": "Create Ticket",
+    "view": "View Ticket",
+    "update": "Update Ticket",
+    "delete": "Delete Ticket",
+    "status": "Status",
+    "priority": "Priority",
+    "assignedTo": "Assigned To",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At"
+  }
+}
