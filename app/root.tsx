@@ -8,9 +8,6 @@ import {
 } from "react-router";
 import { rootAuthLoader } from '@clerk/react-router/ssr.server'
 import { ClerkProvider, SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/react-router'
-
-
-
 import type { Route } from "./+types/root";
 import "./app.css";
 
@@ -54,23 +51,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App({ loaderData }: { loaderData: Route.ComponentProps }) {
   return (
-    // <Outlet />
-
     <ClerkProvider
       loaderData={loaderData}
       signUpFallbackRedirectUrl="/"
       signInFallbackRedirectUrl="/"
     >
-      <header className="flex items-center justify-center py-8 px-4">
+      <main className="m-10">
         <SignedOut>
           <SignInButton />
         </SignedOut>
         <SignedIn>
           <UserButton />
+          <Outlet />
         </SignedIn>
-      </header>
-      <main>
-        <Outlet />
       </main>
     </ClerkProvider>
   );
