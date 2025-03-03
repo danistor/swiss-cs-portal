@@ -8,8 +8,19 @@
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": ["node", "vite/client"],
+    // The "target" option specifies the version of JavaScript to which TypeScript will compile.
+    // "ES2022" means it will compile to ECMAScript 2022, which includes features finalized in 2022.
+    // "ESNext" targets the latest ECMAScript features that are not yet finalized, allowing you to use the most recent features.
     "target": "ES2022",
+
+    // The "module" option determines the module code generation.
+    // "ES2022" means it will use ECMAScript 2022 module syntax.
+    // "ESNext" would use the latest module syntax available, similar to "target".
     "module": "ES2022",
+
+    // The "moduleResolution" option specifies how TypeScript looks for modules.
+    // "bundler" is a new module resolution strategy that works well with modern bundlers.
+    // Other options include "node", "classic", etc.
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "rootDirs": [".", "./.react-router/types"],
