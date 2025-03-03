@@ -9,8 +9,10 @@
 - Prisma
   - initial setup `npx prisma migrate dev --name init`
   - after `shema.prisma` changed `npx prisma migrate dev --name enhanced_schema`
+  - seed with `npx prisma db seed`
 - i18n
   - use remix-18n -> need to finish
+- Created services for interacting with prisma models like user, ticket, message, conversation, responseTemplate
 
 ## Database & Authentication
 
@@ -44,6 +46,10 @@
 - Set up development environment
 - Configured .gitignore for sensitive files
 - Established database connection handling for dev/prod environments
+
+## Created services for interacting with prisma models like user, ticket, message, conversation, responseTemplate
+
+## Added a Prisma seed and seeded the models
 
 ## Next Steps
 
