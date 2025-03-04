@@ -47,27 +47,19 @@ async function main() {
       data: {
         title: `Issue ${i} with product`,
         description: `Description for issue ${i}.`,
-        status: statuses[i % statuses.length] as TicketStatus, // Type assertion
-        priority: priorities[i % priorities.length] as TicketPriority, // Type assertion
+        status: statuses[i % statuses.length] as TicketStatus,
+        priority: priorities[i % priorities.length] as TicketPriority,
         creator: { connect: { id: user3.id } },
         assignee: { connect: { id: user2.id } },
       },
     });
 
-    // Create Conversations for each ticket
-    const conversation = await prisma.conversation.create({
-      data: {
-        title: `Discussion for Issue ${i}`,
-        ticket: { connect: { id: ticket.id } },
-      },
-    });
-
-    // Create Messages for each conversation
+    // Create Messages for each ticket
     await prisma.message.create({
       data: {
         content: `Customer message for issue ${i}.`,
         isFromCustomer: true,
-        conversation: { connect: { id: conversation.id } },
+        ticket: { connect: { id: ticket.id } },
         user: { connect: { id: user3.id } },
       },
     });
@@ -76,7 +68,7 @@ async function main() {
       data: {
         content: `Representative response for issue ${i}.`,
         isFromCustomer: false,
-        conversation: { connect: { id: conversation.id } },
+        ticket: { connect: { id: ticket.id } },
         user: { connect: { id: user2.id } },
       },
     });

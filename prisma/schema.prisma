@@ -76,30 +76,12 @@ model Ticket {
   creator         User            @relation("TicketCreator", fields: [creatorId], references: [id])
   assigneeId      String?
   assignee        User?           @relation("TicketAssignee", fields: [assigneeId], references: [id])
-  conversations   Conversation[]
+  messages        Message[]
   
   @@index([creatorId])
   @@index([assigneeId])
   @@index([status])
   @@index([priority])
-}
-
-model Conversation {
-  id              String    @id @default(cuid())
-  title           String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  
-  // AI-generated fields
-  summary         String?
-  keyPoints       String?
-  
-  // Relations
-  ticketId        String
-  ticket          Ticket    @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-  messages        Message[]
-  
-  @@index([ticketId])
 }
 
 model Message {
@@ -113,12 +95,12 @@ model Message {
   language        Language?
   
   // Relations
-  conversationId  String
-  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  ticketId        String
+  ticket          Ticket       @relation(fields: [ticketId], references: [id], onDelete: Cascade)
   userId          String
   user            User         @relation(fields: [userId], references: [id])
   
-  @@index([conversationId])
+  @@index([ticketId])
   @@index([userId])
 }
 
