@@ -6,6 +6,7 @@
 /build/
 
 # Prisma
-/prisma/
+/prisma/.env
+/prisma/.env.example
 
 .env

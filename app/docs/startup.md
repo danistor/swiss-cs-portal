@@ -21,6 +21,7 @@
   - after `shema.prisma` changed `npx prisma migrate dev --name enhanced_schema`
   - seed with `npx prisma db seed`
   - reset db for re-seeding `npx prisma migrate reset` -> it automatically apply the new seeds
+    - re-seeding can be skipped `npx prisma migrate reset --skip-seed --force`
 - i18n
   - use remix-18n -> need to finish
 - Created services for interacting with prisma models like user, ticket, message, conversation, responseTemplate

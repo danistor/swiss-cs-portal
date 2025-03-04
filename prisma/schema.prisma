@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  REPRESENTATIVE
+  ADMIN
+}
+
+enum TicketStatus {
+  NEW
+  IN_PROGRESS
+  PENDING
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum Language {
+  EN
+  DE
+  FR
+  IT
+}
+
+model User {
+  id              String    @id @default(cuid())
+  clerkId         String    @unique
+  email           String    @unique
+  firstName       String?
+  lastName        String?
+  role            UserRole  @default(CUSTOMER)
+  preferredLanguage Language @default(EN)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  createdTickets  Ticket[]  @relation("TicketCreator")
+  assignedTickets Ticket[]  @relation("TicketAssignee")
+  messages        Message[]
+  
+  @@index([clerkId])
+}
+
+model Ticket {
+  id              String          @id @default(cuid())
+  title           String
+  description     String
+  status          TicketStatus    @default(NEW)
+  priority        TicketPriority  @default(MEDIUM)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  // AI-generated fields
+  autoClassification String?
+  sentimentScore     Float?
+  customerValueTier  String?
+  
+  // Relations
+  creatorId       String
+  creator         User            @relation("TicketCreator", fields: [creatorId], references: [id])
+  assigneeId      String?
+  assignee        User?           @relation("TicketAssignee", fields: [assigneeId], references: [id])
+  conversations   Conversation[]
+  
+  @@index([creatorId])
+  @@index([assigneeId])
+  @@index([status])
+  @@index([priority])
+}
+
+model Conversation {
+  id              String    @id @default(cuid())
+  title           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // AI-generated fields
+  summary         String?
+  keyPoints       String?
+  
+  // Relations
+  ticketId        String
+  ticket          Ticket    @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  messages        Message[]
+  
+  @@index([ticketId])
+}
+
+model Message {
+  id              String       @id @default(cuid())
+  content         String
+  isFromCustomer  Boolean
+  createdAt       DateTime     @default(now())
+  
+  // AI-generated fields
+  sentimentScore  Float?
+  language        Language?
+  
+  // Relations
+  conversationId  String
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User         @relation(fields: [userId], references: [id])
+  
+  @@index([conversationId])
+  @@index([userId])
+}
+
+model ResponseTemplate {
+  id              String    @id @default(cuid())
+  title           String
+  content         String
+  language        Language
+  category        String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
