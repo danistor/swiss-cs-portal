@@ -3,6 +3,7 @@ import { createClerkClient } from "@clerk/react-router/api.server";
 import { getAuth } from "@clerk/react-router/ssr.server";
 import { prisma } from "~/lib/db.server";
 import type { User, UserRole, Language } from "@prisma/client";
+import type { Route } from "../+types/root";
 
 const clerkClient = createClerkClient({
   secretKey: import.meta.env.VITE_CLERK_SECRET_KEY,
@@ -15,9 +16,9 @@ class AuthError extends Error {
   }
 }
 
-export async function getCurrentUser(request: Request): Promise<User> {
+export async function getCurrentUser(args: Route.LoaderArgs): Promise<User> {
   try {
-    const { userId } = await getAuth(request);
+    const { userId } = await getAuth(args);
 
     if (!userId) {
       throw redirect("/sign-in");

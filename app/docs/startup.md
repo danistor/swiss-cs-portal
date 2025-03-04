@@ -1,5 +1,15 @@
 # Development Log - Initial Setup
 
+04/03/2025
+
+## Ticket management
+
+- Dashboard for listing and viewing tickets
+- added seeds for creating more users, tickets, conversations and messages
+- added react router devtools
+
+03/03/2025
+
 ## Setup
 
 - React Router in framework mode
@@ -10,6 +20,7 @@
   - initial setup `npx prisma migrate dev --name init`
   - after `shema.prisma` changed `npx prisma migrate dev --name enhanced_schema`
   - seed with `npx prisma db seed`
+  - reset db for re-seeding `npx prisma migrate reset` -> it automatically apply the new seeds
 - i18n
   - use remix-18n -> need to finish
 - Created services for interacting with prisma models like user, ticket, message, conversation, responseTemplate

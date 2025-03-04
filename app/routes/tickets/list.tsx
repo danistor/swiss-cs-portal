@@ -1,17 +1,17 @@
 
 import { getTickets } from "../../services/ticket.server";
 import type { Ticket } from "@prisma/client";
-// import { getCurrentUser } from "../../services/auth.server";
-import { getAuth } from '@clerk/react-router/ssr.server'
+import { getCurrentUser } from "../../services/auth.server";
 import type { Route } from "./+types/list";
+import { Link } from "react-router";
 
 
-export async function loader({ args }: Route.LoaderArgs) {
-  // const user = await getCurrentUser(args);
+export async function loader(args: Route.LoaderArgs) {
+  const user = await getCurrentUser(args);
+  // console.log("user", user);
 
-  const { userId } = await getAuth(args)
-
-  const tickets = await getTickets({ createdById: userId });
+  const tickets = await getTickets({ creatorId: user.id });
+  // console.log("tickets", tickets);
   return { tickets };
 }
 
@@ -23,7 +23,10 @@ export default function TicketsList({ loaderData }: Route.ComponentProps) {
       <div>TicketsList***</div>
 
       {tickets.map((ticket: Ticket) => (
-        <div className="text-blue-500" key={ticket.id}>{ticket.title}</div>
+        <div className="text-blue-500" key={ticket.id}>
+          {ticket.title}
+          <Link to={`/tickets/id/${ticket.id}`}>View</Link>
+        </div>
       ))}
     </>
   );

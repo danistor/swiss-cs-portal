@@ -31,7 +31,7 @@ export async function getTickets(filters?: {
   status?: TicketStatus;
   priority?: TicketPriority;
   assignedToId?: string;
-  createdById?: string;
+  creatorId?: string;
   preferredLanguage?: Language;
 }) {
   return prisma.ticket.findMany({
