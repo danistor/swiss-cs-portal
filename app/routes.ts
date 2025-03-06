@@ -5,7 +5,7 @@ export default [
     index("routes/home.tsx"),
     ...prefix("tickets", [
       route("list", "routes/tickets/list.tsx"),
-      route("id/:id", "routes/tickets/id.tsx"),
+      route("id/:id", "routes/tickets/view.tsx"),
       route("new", "routes/tickets/new.tsx"),
       route("edit/:id", "routes/tickets/edit.tsx"),
     ]),

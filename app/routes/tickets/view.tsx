@@ -1,4 +1,4 @@
-import type { Route } from "../+types/id";
+import type { Route } from "../+types/view";
 import { getTicketById } from "~/services/ticket.server";
 import type { Message } from "@prisma/client";
 import { Link } from "react-router";
