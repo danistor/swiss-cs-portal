@@ -3,6 +3,8 @@ import { getTicketById } from "~/services/ticket.server";
 import type { Message } from "@prisma/client";
 import { Link } from "react-router";
 import { buttonVariants } from "~/components/ui/button";
+import TicketDetails from "~/components/tickets/Ticket";
+import MessageDetails, { AddMessageForm } from "~/components/tickets/Message";
 
 export async function loader(args: Route.LoaderArgs) {
   const ticket = await getTicketById(args.params.id);
@@ -12,28 +14,36 @@ export async function loader(args: Route.LoaderArgs) {
 export default function Ticket({ params, loaderData }: Route.ComponentProps) {
   const ticket = loaderData.ticket;
   return (
-    <div>
-      Ticket with param {params.id}
-      <div>{ticket.title}</div>
-      <div>{ticket.description}</div>
-      <div>{ticket.status}</div>
-      <div>{ticket.priority}</div>
-      <div>{new Date(ticket.createdAt).toLocaleString()}</div>
-      <div>{new Date(ticket.updatedAt).toLocaleString()}</div>
-      <div>{ticket.creator.firstName}</div>
-      <div>{ticket.creator.lastName}</div>
-      <div>{ticket.creator.email}</div>
-      <div>{ticket?.assignee?.firstName}</div>
-      <div>{ticket?.assignee?.lastName}</div>
-      <div>{ticket?.assignee?.email}</div>
+    <div className="space-y-8">
+      <header className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Ticket: {ticket.title}</h1>
+        <Link
+          className={buttonVariants({ variant: "outline" })}
+          to={`/tickets/edit/${ticket.id}`}
+        >
+          Edit Ticket
+        </Link>
+      </header>
 
-      Messages:
-      <div>
-        {ticket.messages.map((message: Message) => message.content)}
-      </div>
+      <TicketDetails ticket={ticket} />
 
-      Edit:
-      <Link className={`${buttonVariants({ variant: "outline" })} ml-4`} to={`/tickets/edit/${ticket.id}`}>Edit</Link>
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold">Messages</h2>
+        <div className="space-y-4">
+          {ticket.messages.map((message: Message) => (
+            <MessageDetails key={message.id} message={message} />
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-xl font-semibold mb-4">Reply</h2>
+        <AddMessageForm
+          ticketId={ticket.id}
+          className="max-w-2xl"
+          submitLabel="Send Reply"
+        />
+      </section>
     </div>
   );
 }

@@ -8,6 +8,7 @@ export default [
       route("id/:id", "routes/tickets/view.tsx"),
       route("new", "routes/tickets/new.tsx"),
       route("edit/:id", "routes/tickets/edit.tsx"),
+      route(":id/reply", "routes/tickets/reply.tsx"),
     ]),
   ]),
   route("about", "routes/about.tsx"),
