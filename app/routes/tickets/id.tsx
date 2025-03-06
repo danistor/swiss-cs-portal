@@ -1,5 +1,8 @@
-import type { Route } from "../+types/tickets";
+import type { Route } from "../+types/id";
 import { getTicketById } from "~/services/ticket.server";
+import type { Message } from "@prisma/client";
+import { Link } from "react-router";
+import { buttonVariants } from "~/components/ui/button";
 
 export async function loader(args: Route.LoaderArgs) {
   const ticket = await getTicketById(args.params.id);
@@ -8,7 +11,6 @@ export async function loader(args: Route.LoaderArgs) {
 
 export default function Ticket({ params, loaderData }: Route.ComponentProps) {
   const ticket = loaderData.ticket;
-  console.log("ticket", ticket);
   return (
     <div>
       Ticket with param {params.id}
@@ -23,6 +25,15 @@ export default function Ticket({ params, loaderData }: Route.ComponentProps) {
       <div>{ticket.creator.email}</div>
       <div>{ticket?.assignee?.firstName}</div>
       <div>{ticket?.assignee?.lastName}</div>
+      <div>{ticket?.assignee?.email}</div>
+
+      Messages:
+      <div>
+        {ticket.messages.map((message: Message) => message.content)}
+      </div>
+
+      Edit:
+      <Link className={`${buttonVariants({ variant: "outline" })} ml-4`} to={`/tickets/edit/${ticket.id}`}>Edit</Link>
     </div>
   );
 }

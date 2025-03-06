@@ -3,7 +3,7 @@ import type { Language } from "@prisma/client";
 
 export async function createMessage(data: {
   content: string;
-  conversationId: string;
+  ticketId: string;
   userId: string;
   isFromCustomer: boolean;
   sentimentScore?: number;
@@ -15,15 +15,15 @@ export async function createMessage(data: {
       isFromCustomer: data.isFromCustomer,
       sentimentScore: data.sentimentScore,
       language: data.language,
-      conversation: { connect: { id: data.conversationId } },
+      ticket: { connect: { id: data.ticketId } },
       user: { connect: { id: data.userId } }
     }
   });
 }
 
-export async function getMessagesByConversationId(conversationId: string) {
+export async function getMessagesByTicketId(ticketId: string) {
   return prisma.message.findMany({
-    where: { conversationId },
+    where: { ticketId },
     include: {
       user: true
     },

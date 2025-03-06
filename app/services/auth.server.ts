@@ -16,7 +16,7 @@ class AuthError extends Error {
   }
 }
 
-export async function getCurrentUser(args: Route.LoaderArgs): Promise<User> {
+export async function getCurrentUser(args: Route.LoaderArgs | Route.ActionArgs): Promise<User> {
   try {
     const { userId } = await getAuth(args);
 

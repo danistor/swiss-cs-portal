@@ -1,5 +1,9 @@
 # Development Log - Initial Setup
 
+05/03
+
+## Submit new ticket and create initial message
+
 04/03/2025
 
 ## Ticket management
@@ -22,6 +26,7 @@
   - seed with `npx prisma db seed`
   - reset db for re-seeding `npx prisma migrate reset` -> it automatically apply the new seeds
     - re-seeding can be skipped `npx prisma migrate reset --skip-seed --force`
+  - regenerate prisma types `npx prisma generate`
 - i18n
   - use remix-18n -> need to finish
 - Created services for interacting with prisma models like user, ticket, message, conversation, responseTemplate

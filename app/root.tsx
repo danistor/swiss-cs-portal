@@ -10,6 +10,8 @@ import { rootAuthLoader } from '@clerk/react-router/ssr.server'
 import { ClerkProvider, SignedIn, SignedOut, UserButton, SignInButton } from '@clerk/react-router'
 import type { Route } from "./+types/root";
 import "./app.css";
+import { getCurrentUser } from "~/services/auth.server";
+
 
 // Get the publishable key from the environment
 const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || "";
@@ -28,7 +30,14 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export async function loader(args: Route.LoaderArgs) {
-  return rootAuthLoader(args)
+  const user = await getCurrentUser(args);
+  return rootAuthLoader(args, ({ request, context, params }) => {
+    // const { sessionId, userId, getToken } = request.auth
+    context.user = user;
+
+    // Add logic to fetch data
+    return { user: user }
+  })
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {

@@ -7,6 +7,7 @@ export default [
       route("list", "routes/tickets/list.tsx"),
       route("id/:id", "routes/tickets/id.tsx"),
       route("new", "routes/tickets/new.tsx"),
+      route("edit/:id", "routes/tickets/edit.tsx"),
     ]),
   ]),
   route("about", "routes/about.tsx"),

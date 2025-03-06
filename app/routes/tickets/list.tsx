@@ -4,6 +4,7 @@ import type { Ticket } from "@prisma/client";
 import { getCurrentUser } from "../../services/auth.server";
 import type { Route } from "./+types/list";
 import { Link } from "react-router";
+import { buttonVariants } from "~/components/ui/button";
 
 
 export async function loader(args: Route.LoaderArgs) {
@@ -25,7 +26,7 @@ export default function TicketsList({ loaderData }: Route.ComponentProps) {
       {tickets.map((ticket: Ticket) => (
         <div className="text-blue-500" key={ticket.id}>
           {ticket.title}
-          <Link to={`/tickets/id/${ticket.id}`}>View</Link>
+          <Link className={`${buttonVariants({ variant: "outline" })} ml-4`} to={`/tickets/id/${ticket.id}`}>View</Link>
         </div>
       ))}
     </>

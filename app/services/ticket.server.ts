@@ -52,16 +52,12 @@ export async function getTicketById(id: string) {
     include: {
       creator: true,
       assignee: true,
-      conversations: {
+      messages: {
         include: {
-          messages: {
-            include: {
-              user: true
-            },
-            orderBy: {
-              createdAt: "asc"
-            }
-          }
+          user: true
+        },
+        orderBy: {
+          createdAt: "asc"
         }
       }
     }
