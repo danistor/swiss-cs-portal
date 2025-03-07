@@ -3,7 +3,7 @@ import { getCurrentUser } from "~/services/auth.server";
 import { createMessage } from "~/services/message.server";
 import type { Route } from "../+types/reply";
 
-// @todo redirect if GET request
+// @todo redirect if GET request or a 404 page
 
 export async function action(args: Route.ActionArgs) {
   const user = await getCurrentUser(args);

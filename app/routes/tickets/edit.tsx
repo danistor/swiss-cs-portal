@@ -1,6 +1,6 @@
 import type { Route } from "../+types/edit-ticket";
 import { getTicketById, updateTicket } from "~/services/ticket.server";
-import { Form, redirect } from "react-router";
+import { Form, useNavigate, redirect } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 
@@ -26,6 +26,8 @@ export async function action({
 
 export default function EditTicket({ params, loaderData }: Route.ComponentProps) {
   const ticket = loaderData.ticket;
+  const navigate = useNavigate();
+
   return (
     <div>
       <Form method="post" key={ticket.id} className="flex flex-col gap-4">
@@ -34,7 +36,7 @@ export default function EditTicket({ params, loaderData }: Route.ComponentProps)
         <Input type="text" name="status" defaultValue={ticket.status} />
         <Input type="text" name="priority" defaultValue={ticket.priority} />
         <Button type="submit">Save</Button>
-        <Button type="button" variant="destructive">Cancel</Button>
+        <Button onClick={() => navigate(-1)} variant="destructive">Cancel</Button>
       </Form>
     </div>
   );

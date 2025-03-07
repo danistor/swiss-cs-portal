@@ -1,7 +1,7 @@
 import type { Message } from "@prisma/client";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { Form } from "react-router";
+import { Form, useFetcher } from "react-router";
 import { Label } from "../ui/label";
 
 export default function MessageDetails({ message }: { message: Message }) {
@@ -17,7 +17,7 @@ export default function MessageDetails({ message }: { message: Message }) {
 }
 
 interface AddMessageFormProps {
-  ticketId?: string; // Optional for new tickets
+  ticketId?: string;
   className?: string;
   submitLabel?: string;
 }
@@ -41,5 +41,23 @@ export function AddMessageForm({ ticketId, className = "", submitLabel = "Send" 
       </div>
       <Button type="submit">{submitLabel}</Button>
     </Form>
+  );
+}
+
+export function EditMessage({ message, setEditMessage }:
+  { message: Message, setEditMessage: (editMessage: boolean) => void }) {
+  const fetcher = useFetcher();
+  const saved = fetcher.formData ? fetcher.formData.get("content") : null;
+  saved ? setEditMessage(false) : null;
+
+  return (
+    <fetcher.Form method="post" action={`/messages/${message.id}/edit`}>
+      <input type="hidden" name="ticketId" value={message.ticketId} />
+      <Input type="text" name="content" defaultValue={message.content} />
+      <Button type="submit">Save</Button>
+      <Button type="button" variant="destructive" onClick={() => {
+        setEditMessage(false);
+      }}>Cancel</Button>
+    </fetcher.Form>
   );
 }

@@ -1,5 +1,9 @@
 # Development Log - Initial Setup
 
+06/03
+
+## Edit message inline functionality
+
 05/03
 
 ## Submit new ticket and create initial message
