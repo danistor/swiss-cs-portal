@@ -1,5 +1,5 @@
 import { prisma } from "~/lib/db.server";
-import type { TicketStatus, TicketPriority, Language } from "@prisma/client";
+import type { TicketStatus, TicketPriority, Language, Ticket } from "@prisma/client";
 
 export async function createTicket(data: {
   title: string;
@@ -9,7 +9,7 @@ export async function createTicket(data: {
   priority?: TicketPriority;
   preferredLanguage?: Language;
   category?: string;
-  assignedToId?: string;
+  assigneeId?: string;
 }) {
   return prisma.ticket.create({
     data: {
@@ -17,7 +17,7 @@ export async function createTicket(data: {
       description: data.description,
       status: data.status,
       priority: data.priority,
-      assignee: data.assignedToId ? { connect: { id: data.assignedToId } } : undefined,
+      assignee: data.assigneeId ? { connect: { id: data.assigneeId } } : undefined,
       creator: { connect: { id: data.creatorId } }
     },
     include: {
@@ -30,10 +30,10 @@ export async function createTicket(data: {
 export async function getTickets(filters?: {
   status?: TicketStatus;
   priority?: TicketPriority;
-  assignedToId?: string;
+  assigneeId?: string;
   creatorId?: string;
   preferredLanguage?: Language;
-}) {
+}): Promise<Array<Ticket>> {
   return prisma.ticket.findMany({
     where: filters,
     include: {
@@ -69,7 +69,7 @@ export async function updateTicket(id: string, data: {
   description?: string;
   status?: TicketStatus;
   priority?: TicketPriority;
-  assignedToId?: string;
+  assigneeId?: string;
   sentiment?: number;
   category?: string;
   lifetimeValue?: number;

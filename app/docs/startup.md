@@ -6,6 +6,8 @@
 
 ## Partially fix Clerk auth routes to be able to login
 
+## Show all and assign tickets
+
 06/03
 
 ## Edit message inline functionality

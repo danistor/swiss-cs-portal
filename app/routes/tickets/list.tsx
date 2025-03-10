@@ -1,35 +1,50 @@
-
+import { useSearchParams } from "react-router";
 import { getTickets } from "../../services/ticket.server";
-import type { Ticket } from "@prisma/client";
 import { getCurrentUser } from "../../services/auth.server";
 import type { Route } from "./+types/list";
-import { Link } from "react-router";
-import { buttonVariants } from "~/components/ui/button";
-
+import { Button } from "~/components/ui/button";
+import { MyTicketsList } from "~/components/tickets/Ticket";
 
 export async function loader(args: Route.LoaderArgs) {
   const user = await getCurrentUser(args);
-  // console.log("user", user);
+  const filters = user.role === "CUSTOMER" ? { creatorId: user.id } : {};
+  const tickets = await getTickets(filters);
 
-  const tickets = await getTickets({ creatorId: user.id });
-  // console.log("tickets", tickets);
-  return { tickets };
+  return { tickets, user };
 }
 
 export default function TicketsList({ loaderData }: Route.ComponentProps) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filter = searchParams.get("filter");
+  const user = loaderData.user;
   const tickets = loaderData.tickets;
+  const toggleText = filter ? "All tickets" : "My tickets";
+
+  // Apply filter based on URL parameter
+  const filteredTickets = filter
+    ? tickets.filter(ticket => ticket.assigneeId === user.id)
+    : tickets;
+
+  const handleFilterClick = () => {
+    // Toggle filter parameter in the URL
+    if (filter) {
+      searchParams.delete("filter");
+    } else {
+      searchParams.set("filter", "mine");
+    }
+    setSearchParams(searchParams);
+  };
 
   return (
     <>
-      <div>TicketsList***</div>
-
-      {tickets.map((ticket: Ticket) => (
-        <div className="text-blue-500" key={ticket.id}>
-          {ticket.title}
-          <Link className={`${buttonVariants({ variant: "outline" })} ml-4`} to={`/tickets/id/${ticket.id}`}>View</Link>
+      <h1 className="text-2xl font-bold">Tickets List</h1>
+      {user.role !== "CUSTOMER" && (
+        <div className="flex flex-row items-center gap-2 my-6">
+          <span>Show only my assigned tickets</span>
+          <Button onClick={handleFilterClick}>{toggleText}</Button>
         </div>
-      ))}
+      )}
+      <MyTicketsList tickets={filteredTickets} />
     </>
   );
 }
-
