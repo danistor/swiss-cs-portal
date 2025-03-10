@@ -5,12 +5,79 @@ import { Form, useFetcher } from "react-router";
 import { Label } from "../ui/label";
 
 export default function MessageDetails({ message }: { message: Message }) {
+  const fetcher = useFetcher();
+  const isEditingMessage = fetcher.data?.editing;
+
+  // console.log("isEditingMessage", isEditingMessage);
+  console.log("fetcher.data", fetcher.data);
+
+  // If in edit mode, show the edit form
+  if (isEditingMessage) {
+    return (
+      <div className="p-4 border rounded-md mb-4">
+        <div className="font-medium mb-2">{message.isFromCustomer ? "Customer" : "Agent"}</div>
+        <fetcher.Form method="post" action={`/messages/${message.id}/edit`}>
+          <input type="hidden" name="ticketId" value={message.ticketId} />
+          <Input
+            type="text"
+            name="content"
+            defaultValue={message.content}
+            className="mb-2"
+            autoFocus
+          />
+          <div className="flex gap-2">
+            <Button
+              type="submit"
+              size="sm"
+              disabled={fetcher.state === "submitting"}
+            >
+              {fetcher.state === "submitting" ? "Saving..." : "Save"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                // Reset the form by submitting a cancel intent
+                fetcher.submit(
+                  { intent: 'cancel', messageId: message.id },
+                  { method: 'post', action: `/messages/${message.id}/edit` }
+                );
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+          {fetcher.data?.error && (
+            <div className="text-red-500 text-sm mt-2">{fetcher.data.error}</div>
+          )}
+        </fetcher.Form>
+        <div className="text-sm text-gray-500 mt-2">
+          {new Date(message.createdAt).toLocaleString()}
+        </div>
+      </div>
+    );
+  }
+
+  // Otherwise, show the message content with an edit button
   return (
     <div className="p-4 border rounded-md mb-4">
       <div className="font-medium mb-2">{message.isFromCustomer ? "Customer" : "Agent"}</div>
       <div className="text-gray-700">{message.content}</div>
-      <div className="text-sm text-gray-500 mt-2">
-        {new Date(message.createdAt).toLocaleString()}
+      <div className="flex justify-between items-center mt-2">
+        <div className="text-sm text-gray-500">
+          {new Date(message.createdAt).toLocaleString()}
+        </div>
+        <fetcher.Form method="post">
+          <input type="hidden" name="intent" value="editMessage" />
+          <Button
+            type="submit"
+            variant="ghost"
+            size="sm"
+          >
+            Edit
+          </Button>
+        </fetcher.Form>
       </div>
     </div>
   );
@@ -44,20 +111,4 @@ export function AddMessageForm({ ticketId, className = "", submitLabel = "Send" 
   );
 }
 
-export function EditMessage({ message, setEditMessage }:
-  { message: Message, setEditMessage: (editMessage: boolean) => void }) {
-  const fetcher = useFetcher();
-  const saved = fetcher.formData ? fetcher.formData.get("content") : null;
-  saved ? setEditMessage(false) : null;
 
-  return (
-    <fetcher.Form method="post" action={`/messages/${message.id}/edit`}>
-      <input type="hidden" name="ticketId" value={message.ticketId} />
-      <Input type="text" name="content" defaultValue={message.content} />
-      <Button type="submit">Save</Button>
-      <Button type="button" variant="destructive" onClick={() => {
-        setEditMessage(false);
-      }}>Cancel</Button>
-    </fetcher.Form>
-  );
-}

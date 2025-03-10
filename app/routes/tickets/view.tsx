@@ -1,20 +1,28 @@
 import type { Route } from "../+types/view";
 import { getTicketById } from "~/services/ticket.server";
 import type { Message } from "@prisma/client";
-import { Link } from "react-router";
-import { Button, buttonVariants } from "~/components/ui/button";
+import { Link, useFetcher } from "react-router";
+import { buttonVariants } from "~/components/ui/button";
 import TicketDetails from "~/components/tickets/Ticket";
-import MessageDetails, { AddMessageForm, EditMessage } from "~/components/tickets/Message";
-import { useState } from "react";
+import MessageDetails, { AddMessageForm } from "~/components/tickets/Message";
+
 export async function loader(args: Route.LoaderArgs) {
   const ticket = await getTicketById(args.params.id);
   return { ticket };
 }
 
-export default function Ticket({ loaderData }: Route.ComponentProps) {
+export async function clientAction({ params, request, context }: Route.ClientActionArgs) {
+  const formData = await request.formData();
+  const intent = formData.get('intent');
+  if (intent === 'editMessage') {
+    return { ok: true, editing: true };
+  } else {
+    return { ok: true };
+  }
+}
+
+export default function Ticket({ loaderData, actionData }: Route.ComponentProps) {
   const ticket = loaderData.ticket;
-  const [editMessage, setEditMessage] = useState<Message | boolean>(false);
-  const [editMessageId, setEditMessageId] = useState<string | null>(null);
 
   return (
     <div className="space-y-8">
@@ -35,18 +43,10 @@ export default function Ticket({ loaderData }: Route.ComponentProps) {
         <h2 className="text-xl font-semibold">Messages</h2>
         <div className="space-y-4">
           {ticket.messages.map((message: Message) => (
-            <li className="flex flex-col gap-2" key={message.id}>
-              {editMessage && editMessageId === message.id ?
-                <EditMessage key={message.id} message={message} setEditMessage={setEditMessage} /> :
-                <div className="flex flex-col gap-2">
-                  <MessageDetails key={message.id} message={message} />
-                  <Button variant="outline" onClick={() => {
-                    setEditMessage(true);
-                    setEditMessageId(message.id);
-                  }}>Edit</Button>
-                </div>
-              }
-            </li>
+            <MessageDetails
+              key={message.id}
+              message={message}
+            />
           ))}
         </div>
       </section>
