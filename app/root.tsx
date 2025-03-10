@@ -11,6 +11,7 @@ import { ClerkProvider, SignedIn, SignedOut, UserButton, SignInButton } from '@c
 import type { Route } from "./+types/root";
 import "./app.css";
 import { getCurrentUser } from "~/services/auth.server";
+import { Link } from "react-router";
 
 
 // Get the publishable key from the environment
@@ -30,14 +31,26 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export async function loader(args: Route.LoaderArgs) {
-  const user = await getCurrentUser(args);
-  return rootAuthLoader(args, ({ request, context, params }) => {
-    // const { sessionId, userId, getToken } = request.auth
-    context.user = user;
+  // Only apply authentication check for protected routes
+  // @todo doesn't work with Clerk
+  const pathname = new URL(args.request.url).pathname;
+  if (pathname === "/sign-in" || pathname === "/sign-up" || pathname === "/about") {
+    return rootAuthLoader(args);
+  }
 
-    // Add logic to fetch data
-    return { user: user }
-  })
+  try {
+    const user = await getCurrentUser(args);
+    return rootAuthLoader(args, ({ request, context, params }) => {
+      context.user = user;
+      return { user: user }
+    });
+  } catch (error) {
+    // If there's a redirect response from getCurrentUser, pass it through
+    if (error instanceof Response && error.status === 302) {
+      return error;
+    }
+    throw error;
+  }
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -62,12 +75,15 @@ export default function App({ loaderData }: { loaderData: Route.ComponentProps }
   return (
     <ClerkProvider
       loaderData={loaderData}
-      signUpFallbackRedirectUrl="/"
-      signInFallbackRedirectUrl="/"
+      signUpFallbackRedirectUrl="/sign-up"
+      signInFallbackRedirectUrl="/sign-in"
     >
       <main className="m-10">
         <SignedOut>
-          <SignInButton />
+          <div className="flex gap-4 items-center">
+            <SignInButton />
+            <Link to="/sign-up" className="text-blue-600 hover:underline">Create an account</Link>
+          </div>
         </SignedOut>
         <SignedIn>
           <UserButton />

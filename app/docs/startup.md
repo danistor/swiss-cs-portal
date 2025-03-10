@@ -1,5 +1,11 @@
 # Development Log - Initial Setup
 
+# 10/03
+
+## Refactor edit message to not use react state
+
+## Partially fix Clerk auth routes to be able to login
+
 06/03
 
 ## Edit message inline functionality

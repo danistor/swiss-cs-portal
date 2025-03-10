@@ -13,4 +13,6 @@ export default [
     route("messages/:id/edit", "routes/messages/edit.tsx"),
   ]),
   route("about", "routes/about.tsx"),
+  route("sign-in", "routes/sign-in.tsx"),
+  route("sign-up", "routes/sign-up.tsx"),
 ] satisfies RouteConfig;

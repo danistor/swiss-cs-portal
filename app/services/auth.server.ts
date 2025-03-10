@@ -20,6 +20,7 @@ export async function getCurrentUser(args: Route.LoaderArgs | Route.ActionArgs):
   try {
     const { userId } = await getAuth(args);
 
+    // @todo: remove this once we have a proper auth flow
     if (!userId) {
       throw redirect("/sign-in");
     }
