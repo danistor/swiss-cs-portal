@@ -4,6 +4,7 @@ import { getCurrentUser } from "../../services/auth.server";
 import type { Route } from "./+types/list";
 import { Button } from "~/components/ui/button";
 import { MyTicketsList } from "~/components/tickets/Ticket";
+import { UserRole } from "@prisma/client";
 
 export async function loader(args: Route.LoaderArgs) {
   const user = await getCurrentUser(args);
@@ -38,7 +39,7 @@ export default function TicketsList({ loaderData }: Route.ComponentProps) {
   return (
     <>
       <h1 className="text-2xl font-bold">Tickets List</h1>
-      {user.role !== "CUSTOMER" && (
+      {user.role !== UserRole.CUSTOMER && (
         <div className="flex flex-row items-center gap-2 my-6">
           <span>Show only my assigned tickets</span>
           <Button onClick={handleFilterClick}>{toggleText}</Button>
