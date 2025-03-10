@@ -1,7 +1,7 @@
 import type { Route } from "../+types/view";
 import { getTicketById } from "~/services/ticket.server";
 import type { Message } from "@prisma/client";
-import { Link, useFetcher } from "react-router";
+import { Link } from "react-router";
 import { buttonVariants } from "~/components/ui/button";
 import TicketDetails from "~/components/tickets/Ticket";
 import MessageDetails, { AddMessageForm } from "~/components/tickets/Message";
@@ -27,7 +27,7 @@ export default function Ticket({ loaderData, actionData }: Route.ComponentProps)
   return (
     <div className="space-y-8">
       <header className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Ticket: {ticket.title}</h1>
+        <Link to="/tickets/list" className={buttonVariants({ variant: "outline" })}>Back</Link>
         <Link
           className={buttonVariants({ variant: "outline" })}
           to={`/tickets/edit/${ticket.id}`}

@@ -8,9 +8,6 @@ export default function MessageDetails({ message }: { message: Message }) {
   const fetcher = useFetcher();
   const isEditingMessage = fetcher.data?.editing;
 
-  // console.log("isEditingMessage", isEditingMessage);
-  console.log("fetcher.data", fetcher.data);
-
   // If in edit mode, show the edit form
   if (isEditingMessage) {
     return (

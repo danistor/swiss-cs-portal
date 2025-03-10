@@ -8,6 +8,8 @@
 
 ## Show all and assign tickets
 
+## Edit ticket with select and comboboxes for asignee and status
+
 06/03
 
 ## Edit message inline functionality
