@@ -1,8 +1,8 @@
 import { type RouteConfig, index, route, prefix, layout } from "@react-router/dev/routes";
 
 export default [
-  layout("layouts/dashboard.tsx", [
-    index("routes/home.tsx"),
+  layout("layouts/main.tsx", [
+    index("routes/dashboard.tsx"),
     ...prefix("tickets", [
       route("list", "routes/tickets/list.tsx"),
       route("id/:id", "routes/tickets/view.tsx"), // @todo remove id from url and refactor where it is used

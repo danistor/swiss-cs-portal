@@ -82,3 +82,41 @@ export async function requireRepresentative(request: Request): Promise<User> {
 export function hasRole(user: User, ...roles: UserRole[]): boolean {
   return roles.includes(user.role);
 }
+
+/**
+ * Require authentication and specific roles to access a route
+ * @param request The request object or loader args
+ * @param allowedRoles Array of roles that are allowed to access the route
+ * @returns The authenticated user
+ * @throws Redirects to login if not authenticated or forbidden if not authorized
+ */
+export async function requireAuth(
+  args: Route.LoaderArgs | Route.ActionArgs,
+  allowedRoles: UserRole[] = []
+) {
+  // Extract request from args if needed
+  // const request = 'request' in requestOrArgs ? requestOrArgs.request : requestOrArgs;
+
+  const { userId } = await getAuth(args);
+
+  if (!userId) {
+    throw redirect('/login');
+  }
+
+  // If no roles specified, just require authentication
+  if (allowedRoles.length === 0) {
+    return userId;
+  }
+
+  // Check if user has required role
+  const user = await prisma.user.findUnique({
+    where: { clerkId: userId },
+    select: { role: true },
+  });
+
+  if (!user || !allowedRoles.includes(user.role)) {
+    throw new Response('Forbidden', { status: 403 });
+  }
+
+  return userId;
+}

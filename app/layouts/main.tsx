@@ -1,6 +1,6 @@
 import { Link, Outlet } from "react-router";
 
-export default function DashboardLayout() {
+export default function MainLayout() {
   return (
     <div className="flex flex-col md:flex-row min-h-screen w-full relative">
       {/* Hidden checkbox for CSS-only toggle */}

@@ -53,6 +53,7 @@ model User {
   createdTickets  Ticket[]  @relation("TicketCreator")
   assignedTickets Ticket[]  @relation("TicketAssignee")
   messages        Message[]
+  performance     AgentPerformance[]
   
   @@index([clerkId])
 }
@@ -112,4 +113,41 @@ model ResponseTemplate {
   category        String
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+}
+
+// Analytics Models
+model AgentPerformance {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  date            DateTime  @default(now())
+  ticketsResolved Int       @default(0)
+  averageResponseTime Int   @default(0) // in minutes
+  customerSatisfactionScore Float?
+  
+  @@index([userId])
+  @@index([date])
+}
+
+model TicketMetrics {
+  id              String    @id @default(cuid())
+  date            DateTime  @default(now())
+  newTickets      Int       @default(0)
+  resolvedTickets Int       @default(0)
+  averageResolutionTime Int @default(0) // in minutes
+  priorityDistribution Json? // JSON object with counts by priority
+  statusDistribution Json?  // JSON object with counts by status
+  
+  @@index([date])
+}
+
+model LanguageMetrics {
+  id              String    @id @default(cuid())
+  date            DateTime  @default(now())
+  language        Language
+  ticketCount     Int       @default(0)
+  messageCount    Int       @default(0)
+  
+  @@index([date])
+  @@index([language])
 }
