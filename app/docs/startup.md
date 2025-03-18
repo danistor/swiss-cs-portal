@@ -1,5 +1,9 @@
 # Development Log - Initial Setup
 
+# 18/03
+
+## Enhance ticket creation form with validation and improved UX with Optimistic UI
+
 # 17/03
 
 ## Add agent dashboard
